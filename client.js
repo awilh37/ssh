@@ -1,4 +1,58 @@
+// --- NEW CODE: On-Screen Console Logger ---
+// This section will capture console messages and display them on the webpage.
+
+// Get the div where we will show the logs
+const logOutput = document.getElementById('console-log-output');
+
+/**
+ * A function to add messages to our on-screen console.
+ * @param {any[]} args - The content to log.
+ * @param {'info' | 'error' | 'warn'} level - The log level for styling.
+ */
+function logToUI(args, level = 'info') {
+    if (!logOutput) return; // Failsafe if the element doesn't exist
+
+    const logEntry = document.createElement('div');
+    logEntry.className = `log-entry-${level}`;
+
+    const timestamp = new Date().toLocaleTimeString();
+    const message = args.map(arg => {
+        if (typeof arg === 'object' && arg !== null) {
+            return JSON.stringify(arg, null, 2);
+        }
+        return String(arg);
+    }).join(' ');
+
+    logEntry.textContent = `[${timestamp}] ${message}`;
+    logOutput.appendChild(logEntry);
+
+    // Auto-scroll to the bottom
+    logOutput.scrollTop = logOutput.scrollHeight;
+}
+
+// Override the original console functions to also send logs to our UI logger
+const originalConsoleLog = console.log;
+console.log = function(...args) {
+    originalConsoleLog.apply(console, args);
+    logToUI(args, 'info');
+};
+
+const originalConsoleError = console.error;
+console.error = function(...args) {
+    originalConsoleError.apply(console, args);
+    logToUI(args, 'error');
+};
+
+const originalConsoleWarn = console.warn;
+console.warn = function(...args) {
+    originalConsoleWarn.apply(console, args);
+    logToUI(args, 'warn');
+};
+// --- END of On-Screen Console Logger ---
+
+
 // This script runs in the user's browser.
+console.log("Client script loaded.");
 
 // Create a new terminal instance using xterm.js
 const term = new Terminal({
@@ -23,6 +77,7 @@ const wsUrl = `wss://ssh-vvmw.onrender.com/ssh`;
 
 
 term.write(`Attempting to connect to the server at ${wsUrl}...\r\n`);
+console.log(`Attempting to connect to WebSocket at: ${wsUrl}`);
 
 try {
     const ws = new WebSocket(wsUrl);
@@ -30,7 +85,7 @@ try {
     // --- WebSocket Event Handlers ---
 
     ws.onopen = () => {
-        console.log('WebSocket connection opened.');
+        console.log('WebSocket connection opened successfully.');
         term.write('Connection established. Welcome!\r\n');
     };
 
@@ -40,14 +95,20 @@ try {
         term.write(event.data);
     };
 
-    ws.onclose = () => {
-        console.log('WebSocket connection closed.');
-        term.write('\r\n\r\n[Connection to server closed.]\r\n');
+    ws.onclose = (event) => {
+        console.warn('WebSocket connection closed.');
+        if (event.wasClean) {
+            term.write(`\r\n\r\n[Connection to server closed cleanly, code=${event.code} reason=${event.reason}]`);
+        } else {
+            console.error('Connection died unexpectedly.');
+            term.write('\r\n\r\n[Connection to server was lost.]\r\n');
+        }
     };
 
     ws.onerror = (error) => {
-        console.error('WebSocket error:', error);
-        term.write('\r\n\r\n[An error occurred with the connection.]\r\n');
+        console.error('A WebSocket error occurred. This is the most likely source of the problem.');
+        console.error("This usually means the server URL is wrong, the server is down, or something is blocking the connection.");
+        term.write('\r\n\r\n[An error occurred with the connection. See console log below for details.]\r\n');
     };
 
 
@@ -56,11 +117,15 @@ try {
     // When the user types something in the terminal...
     term.onData(data => {
         // ...send that data over the WebSocket to the server.
-        ws.send(data);
+        if (ws.readyState === WebSocket.OPEN) {
+            ws.send(data);
+        } else {
+            console.warn("Could not send data, WebSocket is not open.");
+        }
     });
 
 } catch (e) {
-    term.write(`\r\n[Error initializing WebSocket: ${e.message}]`);
-    console.error("Failed to create WebSocket", e);
+    console.error(`Error initializing WebSocket: ${e.message}`);
+    term.write(`\r\n[Fatal Error: Could not create WebSocket. Check for typos in the URL.]`);
 }
 
