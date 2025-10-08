@@ -24,7 +24,7 @@ term.open(document.getElementById('terminal-container'));
 //
 // Replace 'your-backend-server-url.onrender.com' with the actual URL you get
 // from your hosting provider. Make sure to use 'wss://' for a secure connection.
-const wsUrl = `wss://your-backend-server-url.onrender.com/ssh`;
+const wsUrl = `https://ssh-vvmw.onrender.com`;
 
 
 term.write(`Attempting to connect to the server at ${wsUrl}...\r\n`);
