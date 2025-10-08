@@ -16,15 +16,10 @@ const term = new Terminal({
 // Attach the terminal to the DOM element
 term.open(document.getElementById('terminal-container'));
 
-// IMPORTANT CHANGE: Point to your separate backend server.
-//
-// Previously, this code assumed the server was at the same address as the webpage.
-// When you host the frontend on GitHub Pages and the backend on another service
-// (like Render, Glitch, or Fly.io), you need to put the backend's full address here.
-//
-// Replace 'your-backend-server-url.onrender.com' with the actual URL you get
-// from your hosting provider. Make sure to use 'wss://' for a secure connection.
-const wsUrl = `https://ssh-vvmw.onrender.com`;
+// --- UPDATED ---
+// This now points to your live Render server URL.
+// The 'wss://' part means it's a secure WebSocket connection.
+const wsUrl = `wss://ssh-vvmw.onrender.com/ssh`;
 
 
 term.write(`Attempting to connect to the server at ${wsUrl}...\r\n`);

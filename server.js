@@ -22,23 +22,38 @@ expressWs(app);
 // Serve the static frontend files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
+// --- NEW CODE ADDED ---
+// This is a "health check" route. When you visit your Render URL,
+// you will see this message instead of "Not Found". This confirms
+// that your server is running correctly.
+app.get('/', (req, res) => {
+    res.status(200).send('Web SSH Server is running. Connect via WebSocket at /ssh');
+});
+// --- END OF NEW CODE ---
+
+
 // Set up the WebSocket endpoint at '/ssh'
 app.ws('/ssh', (ws, req) => {
     console.log('Client connected via WebSocket');
 
     const ssh = new Client();
 
-    // --------------------------------------------------------------------------
-    // --- CATASTROPHIC VULNERABILITY: HARDCODED CREDENTIALS ---
-    // This is the single biggest security flaw. Credentials should never be
-    // stored in source code. They should be managed by a secure vault
-    // (like HashiCorp Vault) and fetched dynamically.
-    // --------------------------------------------------------------------------
+    // --- IMPORTANT SECURITY UPDATE ---
+    // Instead of writing your password here, we now safely read it from
+    // Environment Variables that you will set up in your Render dashboard.
+    // This keeps your secrets out of the code!
+    if (!process.env.SSH_HOST || !process.env.SSH_USER || !process.env.SSH_PASS) {
+        console.error("--> FATAL: Missing SSH credentials in environment variables.");
+        ws.send("\r\n[Server Error: SSH credentials not configured.]\r\n");
+        ws.close();
+        return;
+    }
+
     const sshConfig = {
-        host: 'rand0m.tplinkdns.com', // The target SSH server to connect to
+        host: process.env.SSH_HOST,
         port: 22,
-        username: 'awilh37', // Replace with a valid username on the target
-        password: 'buckobug'  // Replace with the password
+        username: process.env.SSH_USER,
+        password: process.env.SSH_PASS
     };
     // --------------------------------------------------------------------------
 
@@ -109,11 +124,11 @@ app.ws('/ssh', (ws, req) => {
     }
 });
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000; // Render provides the PORT variable
 app.listen(PORT, '0.0.0.0', () => {
     // --- INSECURE TRANSPORT ---
     // The server is running on HTTP, not HTTPS. All traffic is unencrypted.
-    console.log(`Web SSH server listening on http://localhost:${PORT}`);
+    console.log(`Web SSH server listening on port ${PORT}`);
     console.log('WARNING: This server is NOT secure. Do not expose to the internet.');
 });
 
