@@ -96,8 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // webpage and see the password. This is only for our educational example.
         // In a real application, you would send this to the server to be
         // checked securely, and never store it in the client-side code.
-        const correctUsername = "awilh37";
-        const correctPassword = "buckobug";
+        const correctUsername = "awilh";
+        const correctPassword = "125012";
 
         if (usernameInput.value === correctUsername && passwordInput.value === correctPassword) {
             console.log("Login successful!");
