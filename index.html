@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web SSH Terminal (Insecure Example)</title>
-    <!-- UPDATED: Now loading the CSS file from the local repository -->
+    <!-- Now loading the CSS file from the local repository -->
     <link rel="stylesheet" href="xterm.min.css" />
     <style>
         body {
@@ -79,10 +79,10 @@
         <div id="console-log-output"></div>
     </div>
     
-    <!-- UPDATED: Now loading the JS library from the local repository. -->
-    <!-- This MUST come before client.js -->
-    <script src="xterm.min.js"></script>
-    <script src="client.js"></script>
+    <!-- UPDATED: Added the 'defer' attribute to both scripts. -->
+    <!-- This ensures the browser loads them in the correct order after -->
+    <!-- the page is ready, which solves the race condition. -->
+    <script src="xterm.min.js" defer></script>
+    <script src="client.js" defer></script>
 </body>
 </html>
-
