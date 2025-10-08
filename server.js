@@ -35,10 +35,10 @@ app.ws('/ssh', (ws, req) => {
     // (like HashiCorp Vault) and fetched dynamically.
     // --------------------------------------------------------------------------
     const sshConfig = {
-        host: 'localhost', // The target SSH server to connect to
+        host: 'rand0m.tplinkdns.com', // The target SSH server to connect to
         port: 22,
-        username: 'your_ssh_username', // Replace with a valid username on the target
-        password: 'your_ssh_password'  // Replace with the password
+        username: 'awilh37', // Replace with a valid username on the target
+        password: 'buckobug'  // Replace with the password
     };
     // --------------------------------------------------------------------------
 
