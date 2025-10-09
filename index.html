@@ -1,5 +1,6 @@
 <!doctype html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,11 +14,16 @@
             color: #d4d4d4;
             margin: 0;
             padding: 20px;
+            height: 100vh;
+            /* Set a fixed viewport height */
+            box-sizing: border-box;
+            /* Ensures padding is included in the height */
+
+            /* These two properties make the body a flex container */
             display: flex;
             flex-direction: column;
-            height: 100vh;
-            box-sizing: border-box;
         }
+
         .hidden {
             display: none !important;
         }
@@ -35,6 +41,7 @@
             align-items: center;
             z-index: 1000;
         }
+
         #login-modal {
             background-color: #2a2a2a;
             padding: 30px;
@@ -43,11 +50,13 @@
             width: 320px;
             text-align: center;
         }
+
         #login-modal h2 {
             margin-top: 0;
             color: #eee;
             font-weight: 400;
         }
+
         .login-input {
             width: 100%;
             padding: 12px;
@@ -59,6 +68,7 @@
             box-sizing: border-box;
             font-size: 16px;
         }
+
         .login-button {
             width: 100%;
             padding: 12px;
@@ -70,9 +80,11 @@
             cursor: pointer;
             transition: background-color 0.2s;
         }
+
         .login-button:hover {
             background-color: #e76f6f;
         }
+
         #login-error {
             color: #ff8b8b;
             margin-top: 15px;
@@ -83,9 +95,18 @@
         #app-container {
             display: flex;
             flex-direction: column;
-            height: 100%;
-            min-height: 0; /* Add this for extra robustness */
+
+            /* REMOVE this line: */
+            /* height: 100%; */
+
+            /* ADD this line: */
+            flex-grow: 1;
+            /* This tells it to expand to fill the body's remaining space */
+
+            /* KEEP this line (it's very important): */
+            min-height: 0;
         }
+
         h1 {
             color: #d75f5f;
             font-weight: 300;
@@ -100,20 +121,29 @@
 
         #terminal {
             /* --- Sizing & Layout --- */
-            flex-grow: 1;                 /* This is the key: tells it to fill available vertical space. */
-            position: relative;           /* Establishes a positioning context, good for addons. */
+            flex-grow: 1;
+            /* This is the key: tells it to fill available vertical space. */
+            position: relative;
+            /* Establishes a positioning context, good for addons. */
 
             /* --- THE CRUCIAL FIXES for Flexbox Overflow --- */
-            min-height: 0;                /* Prevents content from expanding the flex parent. This is essential. */
-            overflow: hidden;             /* A final failsafe. It will clip anything that tries to render outside the bounds. */
+            min-height: 0;
+            /* Prevents content from expanding the flex parent. This is essential. */
+            overflow: hidden;
+            /* A final failsafe. It will clip anything that tries to render outside the bounds. */
 
             /* --- Visual Framing --- */
-            background-color: #000;       /* The background of the "frame". */
-            border: 1px solid #444;       /* The border of the "frame". */
-            border-radius: 8px;           /* Rounded corners. */
-            padding: 15px;                /* THIS IS THE MAGIC: Creates the space between the border and the actual terminal content. */
+            background-color: #000;
+            /* The background of the "frame". */
+            border: 1px solid #444;
+            /* The border of the "frame". */
+            border-radius: 8px;
+            /* Rounded corners. */
+            padding: 15px;
+            /* THIS IS THE MAGIC: Creates the space between the border and the actual terminal content. */
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
         }
+
         .xterm .xterm-viewport {
             border-radius: 6px;
         }
@@ -129,6 +159,7 @@
             display: flex;
             flex-direction: column;
         }
+
         #console-log-header {
             background-color: #333;
             color: #eee;
@@ -137,6 +168,7 @@
             border-top-left-radius: 7px;
             border-top-right-radius: 7px;
         }
+
         #console-log-output {
             padding: 10px;
             font-family: monospace;
@@ -144,12 +176,21 @@
             overflow-y: scroll;
             flex-grow: 1;
         }
-        .log-entry-error { color: #ff8b8b; }
-        .log-entry-warn { color: #ffd78b; }
-        .log-entry-info { color: #8be8ff; }
 
+        .log-entry-error {
+            color: #ff8b8b;
+        }
+
+        .log-entry-warn {
+            color: #ffd78b;
+        }
+
+        .log-entry-info {
+            color: #8be8ff;
+        }
     </style>
 </head>
+
 <body>
 
     <!-- NEW: Login Screen -->
@@ -177,10 +218,10 @@
             <div id="console-log-output"></div>
         </div>
     </div>
-    
+
     <script src="xterm.min.js" defer></script>
     <script src="xterm-addon-fit.min.js"></script>
     <script src="client.js" defer></script>
 </body>
-</html>
 
+</html>
