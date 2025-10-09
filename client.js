@@ -46,7 +46,9 @@ function initializeApp() {
         fontSize: 14,
         // --- 2. REMOVE the fixed rows property ---
         // rows: 40, 
-        theme: { background: '#000000', foreground: '#00ff00', cursor: '#00ff00' }
+        theme: { background: '#000000', foreground: '#00ff00', cursor: '#00ff00' },
+        
+        scrollback: 28
     });
 
     // --- 3. Load the addon into the terminal ---
