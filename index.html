@@ -13,7 +13,6 @@
             background-color: #1e1e1e;
             color: #d4d4d4;
             margin: 0;
-            padding: 20px;
             height: 100vh;
             /* Set a fixed viewport height */
             box-sizing: border-box;
@@ -92,19 +91,22 @@
         }
 
         /* --- Main App Container --- */
+        /* in your <style> tag in index.html */
+
         #app-container {
             display: flex;
             flex-direction: column;
-
-            /* REMOVE this line: */
-            /* height: 100%; */
-
-            /* ADD this line: */
             flex-grow: 1;
-            /* This tells it to expand to fill the body's remaining space */
-
-            /* KEEP this line (it's very important): */
+            /* This is correct! */
             min-height: 0;
+            /* This is also correct! */
+
+            /* MOVE THE PADDING HERE: */
+            padding: 20px;
+
+            /* ADD THIS CRUCIAL LINE: */
+            box-sizing: border-box;
+            /* This makes the padding stay inside the container's boundary */
         }
 
         h1 {
