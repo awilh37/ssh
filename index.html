@@ -7,20 +7,12 @@
     <title>Web SSH Terminal (Insecure Example)</title>
     <link rel="stylesheet" href="xterm.min.css" />
     <style>
-        /* --- General Body & Layout --- */
+        /* --- General Body & Utility --- */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: #1e1e1e;
             color: #d4d4d4;
             margin: 0;
-            height: 100vh;
-            /* Set a fixed viewport height */
-            box-sizing: border-box;
-            /* Ensures padding is included in the height */
-
-            /* These two properties make the body a flex container */
-            display: flex;
-            flex-direction: column;
         }
 
         .hidden {
@@ -90,74 +82,70 @@
             height: 20px;
         }
 
-        /* --- Main App Container --- */
-        /* in your <style> tag in index.html */
-
+        /* --- NEW Rock-Solid App Layout --- */
         #app-container {
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-            /* This is correct! */
-            min-height: 0;
-            /* This is also correct! */
-
-            /* MOVE THE PADDING HERE: */
-            padding: 20px;
-
-            /* ADD THIS CRUCIAL LINE: */
-            box-sizing: border-box;
-            /* This makes the padding stay inside the container's boundary */
+            position: relative;
+            /* Establishes the coordinate system for its children */
+            height: 100vh;
         }
 
+        /* --- Fixed Header --- */
         h1 {
             color: #d75f5f;
             font-weight: 300;
             border-bottom: 1px solid #444;
-            padding-bottom: 10px;
-            margin-top: 0;
-            flex-shrink: 0;
+
+            /* Pinned to the top */
+            position: absolute;
+            top: 0;
+            left: 20px;
+            right: 20px;
+            height: 40px;
+            /* Explicit height */
+            padding: 10px 0;
+            margin: 0;
         }
 
-        /* --- UI FIX: Terminal Container --- */
-        /* in your <style> tag in index.html */
-
+        /* --- The Terminal (Fills the middle) --- */
         #terminal {
-            /* --- Sizing & Layout --- */
-            flex-grow: 1;
-            /* This is the key: tells it to fill available vertical space. */
-            position: relative;
-            /* Establishes a positioning context, good for addons. */
+            /* Pinned to the space between the header and footer */
+            position: absolute;
+            top: 70px;
+            /* (h1 height + its padding) + a little margin */
+            bottom: 220px;
+            /* (console log height) + a little margin */
+            left: 20px;
+            right: 20px;
 
-            /* --- THE CRUCIAL FIXES for Flexbox Overflow --- */
-            min-height: 0;
-            /* Prevents content from expanding the flex parent. This is essential. */
-            overflow: hidden;
-            /* A final failsafe. It will clip anything that tries to render outside the bounds. */
-
-            /* --- Visual Framing --- */
+            /* Styling */
             background-color: #000;
-            /* The background of the "frame". */
             border: 1px solid #444;
-            /* The border of the "frame". */
             border-radius: 8px;
-            /* Rounded corners. */
             padding: 15px;
-            /* THIS IS THE MAGIC: Creates the space between the border and the actual terminal content. */
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            box-sizing: border-box;
+            /* Ensures padding is inside the element */
         }
 
         .xterm .xterm-viewport {
             border-radius: 6px;
+            /* A nice touch for the inner terminal view */
         }
 
-        /* --- Console Log Container --- */
+        /* --- Fixed Footer (Console Log) --- */
         #console-log-container {
-            flex-shrink: 0;
-            margin-top: 20px;
+            /* Pinned to the bottom */
+            position: absolute;
+            bottom: 0;
+            left: 20px;
+            right: 20px;
+            height: 200px;
+            /* Explicit height */
+
+            /* Internal layout and styling */
             background-color: #111;
             border: 1px solid #444;
             border-radius: 8px;
-            height: 200px;
             display: flex;
             flex-direction: column;
         }
@@ -169,6 +157,8 @@
             font-weight: bold;
             border-top-left-radius: 7px;
             border-top-right-radius: 7px;
+            flex-shrink: 0;
+            /* Prevents shrinking */
         }
 
         #console-log-output {
@@ -177,6 +167,7 @@
             font-size: 13px;
             overflow-y: scroll;
             flex-grow: 1;
+            /* Fills the rest of the container */
         }
 
         .log-entry-error {
