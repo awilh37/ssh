@@ -99,16 +99,18 @@
             flex-grow: 1;
             border: 1px solid #444;
             border-radius: 8px;
-            padding: 15px;
+            padding: 15px; /* The padding creates the "frame" */
             background-color: #000;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
             min-height: 200px;
+            /* Add this to help the addon size correctly */
+            position: relative; 
         }
         /* --- UI FIX: This is the new element the terminal will attach to. --- */
         /* This keeps it inside the parent's padding. */
         #terminal {
              width: 100%;
-             height: 200px;
+             height: 100%;
         }
         .xterm .xterm-viewport {
             border-radius: 6px;
@@ -177,6 +179,7 @@
     </div>
     
     <script src="xterm.min.js" defer></script>
+    <script src="xterm-addon-fit.min.js"></script>
     <script src="client.js" defer></script>
 </body>
 </html>

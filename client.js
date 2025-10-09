@@ -28,24 +28,42 @@ console.warn = function(...args) {
 
 // --- Application Initialization Function ---
 // This code now only runs AFTER a successful login.
+// client.js
+
 function initializeApp() {
     console.log("Terminal library is ready. Initializing application...");
     if (typeof Terminal === 'undefined') {
-        console.error("FATAL ERROR: The 'Terminal' object is still not defined. The xterm.min.js file may be corrupted or missing.");
+        console.error("FATAL ERROR: The 'Terminal' object is still not defined.");
         return;
     }
+
+    // --- 1. Initialize the FitAddon ---
+    const fitAddon = new FitAddon.FitAddon();
+
     const term = new Terminal({
         cursorBlink: true,
         fontFamily: 'Menlo, Monaco, "Courier New", monospace',
         fontSize: 14,
-        rows: 40,
+        // --- 2. REMOVE the fixed rows property ---
+        // rows: 40, 
         theme: { background: '#000000', foreground: '#00ff00', cursor: '#00ff00' }
     });
 
-    // UI FIX: The terminal now attaches to the inner #terminal div, not the container.
-    term.open(document.getElementById('terminal'));
-    const wsUrl = `wss://ssh-vvmw.onrender.com/ssh`;
+    // --- 3. Load the addon into the terminal ---
+    term.loadAddon(fitAddon);
 
+    term.open(document.getElementById('terminal'));
+
+    // --- 4. Perform the initial "fit" to size the terminal ---
+    // This makes it fill the container on load.
+    fitAddon.fit();
+
+    // --- 5. (Optional but Recommended) Resize the terminal on window resize ---
+    window.addEventListener('resize', () => {
+        fitAddon.fit();
+    });
+
+    const wsUrl = `wss://ssh-vvmw.onrender.com/ssh`;
     term.write(`Attempting to connect to the server at ${wsUrl}...\r\n`);
     console.log(`Attempting to connect to WebSocket at: ${wsUrl}`);
 
@@ -62,7 +80,7 @@ function initializeApp() {
             term.write(`\r\n\r\n[Connection to server closed ${reason}]`);
         };
         ws.onerror = (error) => {
-            console.error('A WebSocket error occurred. This usually means the server URL is wrong, the server is down, or something is blocking the connection.');
+            console.error('A WebSocket error occurred.');
             term.write('\r\n\r\n[An error occurred with the connection. See console log for details.]\r\n');
         };
         term.onData(data => {
