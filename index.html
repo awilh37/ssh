@@ -84,6 +84,7 @@
             display: flex;
             flex-direction: column;
             height: 100%;
+            min-height: 0; /* Add this for extra robustness */
         }
         h1 {
             color: #d75f5f;
@@ -95,23 +96,23 @@
         }
 
         /* --- UI FIX: Terminal Container --- */
-        #terminal-container {
-            flex-grow: 1;
-            border: 1px solid #444;
-            border-radius: 8px;
-            padding: 15px; /* The padding creates the "frame" */
-            background-color: #000;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-            min-height: 200px;
-            /* Add this to help the addon size correctly */
-            position: relative; 
-            min-height: 0;
-        }
-        /* --- UI FIX: This is the new element the terminal will attach to. --- */
-        /* This keeps it inside the parent's padding. */
+        /* in your <style> tag in index.html */
+
         #terminal {
-             width: 100%;
-             height: 100%;
+            /* --- Sizing & Layout --- */
+            flex-grow: 1;                 /* This is the key: tells it to fill available vertical space. */
+            position: relative;           /* Establishes a positioning context, good for addons. */
+
+            /* --- THE CRUCIAL FIXES for Flexbox Overflow --- */
+            min-height: 0;                /* Prevents content from expanding the flex parent. This is essential. */
+            overflow: hidden;             /* A final failsafe. It will clip anything that tries to render outside the bounds. */
+
+            /* --- Visual Framing --- */
+            background-color: #000;       /* The background of the "frame". */
+            border: 1px solid #444;       /* The border of the "frame". */
+            border-radius: 8px;           /* Rounded corners. */
+            padding: 15px;                /* THIS IS THE MAGIC: Creates the space between the border and the actual terminal content. */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
         }
         .xterm .xterm-viewport {
             border-radius: 6px;
@@ -169,9 +170,7 @@
         <h1>Web SSH Terminal (Insecure Educational Example)</h1>
 
         <!-- UI FIX: The terminal now attaches to the inner #terminal div -->
-        <div id="terminal-container">
-            <div id="terminal"></div>
-        </div>
+        <div id="terminal"></div>
 
         <div id="console-log-container">
             <div id="console-log-header">Console Log</div>

@@ -40,14 +40,19 @@ function initializeApp() {
     // --- 1. Initialize the FitAddon ---
     const fitAddon = new FitAddon.FitAddon();
 
+    // client.js -> initializeApp()
+
     const term = new Terminal({
         cursorBlink: true,
         fontFamily: 'Menlo, Monaco, "Courier New", monospace',
         fontSize: 14,
-        // --- 2. REMOVE the fixed rows property ---
-        // rows: 40, 
-        theme: { background: '#000000', foreground: '#00ff00', cursor: '#00ff00' }
-        });
+        theme: { 
+            // CHANGE THIS:
+            background: 'transparent', // This lets the CSS background of #terminal show through
+            foreground: '#00ff00', 
+            cursor: '#00ff00' 
+        }
+    });
 
     // --- 3. Load the addon into the terminal ---
     term.loadAddon(fitAddon);
